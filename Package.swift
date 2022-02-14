@@ -6,18 +6,16 @@ import PackageDescription
 let package = Package(
     name: "webrtc-vapor",
     platforms: [
-       .macOS(.v10_15),
-       .iOS(.v13)
+       .macOS(.v10_15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "webrtc-vapor",
-            targets: ["webrtc-vapor"]),
+            targets: ["webrtc-vapor","WebRTC"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(name: "WebRTC", url: "https://github.com/webrtc-sdk/Specs.git", from: "92.4515.11"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0")
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
     ],
@@ -26,9 +24,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "webrtc-vapor",
-            dependencies: ["WebRTC",
-                            .product(name: "Vapor", package: "vapor"),
+            dependencies: [.product(name: "Vapor", package: "vapor"),
                           ]),
+        .binaryTarget(
+                    name: "WebRTC",
+                    path: "WebRTC.xcframework"
+                ),
         .testTarget(
             name: "webrtc-vaporTests",
             dependencies: ["webrtc-vapor",

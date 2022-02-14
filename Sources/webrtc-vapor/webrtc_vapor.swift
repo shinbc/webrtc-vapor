@@ -290,13 +290,13 @@ public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoVie
     }
     
     func captureCurrentFrame(sampleBuffer: CMSampleBuffer){
-        if let capturer = self.videoCapturer as? RTCCustomFrameCapturer {
+        if let capturer = self.videoCapturer as? RTCCustomFrameCapturerVapor {
             capturer.capture(sampleBuffer)
         }
     }
     
     func captureCurrentFrame(sampleBuffer: CVPixelBuffer){
-        if let capturer = self.videoCapturer as? RTCCustomFrameCapturer {
+        if let capturer = self.videoCapturer as? RTCCustomFrameCapturerVapor {
             capturer.capture(sampleBuffer)
         }
     }

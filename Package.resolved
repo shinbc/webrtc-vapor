@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "WebRTC",
-        "repositoryURL": "https://github.com/webrtc-sdk/Specs.git",
-        "state": {
-          "branch": null,
-          "revision": "8f1dff8cfa0f9322f0bea61623cad30594bc1318",
-          "version": "92.4515.11"
-        }
-      },
-      {
         "package": "swift-backtrace",
         "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
