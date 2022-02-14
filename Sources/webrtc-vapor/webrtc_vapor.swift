@@ -1,6 +1,6 @@
 import WebRTC
 
-protocol WebRTCClientVaporDelegate {
+public protocol WebRTCClientVaporDelegate {
     func didGenerateCandidate(iceCandidate: RTCIceCandidate)
     func didIceConnectionStateChanged(iceConnectionState: RTCIceConnectionState)
     func didOpenDataChannel()
@@ -11,6 +11,8 @@ protocol WebRTCClientVaporDelegate {
 }
 
 public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoViewDelegate, RTCDataChannelDelegate {
+    public var iceServers = [RTCIceServer]()
+    
     private var peerConnectionFactory: RTCPeerConnectionFactory!
     private var peerConnections: [Int32: RTCPeerConnection?] = [:]
     private var videoCapturer: RTCVideoCapturer!
@@ -23,7 +25,7 @@ public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoVie
     private var customFrameCapturer: Bool = false
     private var cameraDevicePosition: AVCaptureDevice.Position = .front
     
-    var delegate: WebRTCClientVaporDelegate?
+    public var delegate: WebRTCClientVaporDelegate?
     public private(set) var isConnected: Bool = false
     
     func localVideoView() -> (RTCVideoTrack?, RTCAudioTrack?) {
@@ -46,7 +48,7 @@ public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoVie
     }
     
     // MARK: - Public functions
-    func setup(videoTrack: Bool, audioTrack: Bool, dataChannel: Bool, customFrameCapturer: Bool){
+    public func setup(videoTrack: Bool, audioTrack: Bool, dataChannel: Bool, customFrameCapturer: Bool){
         print("set up")
         self.channels.video = videoTrack
         self.channels.audio = audioTrack
@@ -305,10 +307,10 @@ public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoVie
     // MARK: - Setup
     private func setupPeerConnection() -> RTCPeerConnection? {
         let rtcConf = RTCConfiguration()
-        
-        rtcConf.iceServers = [RTCIceServer(urlStrings: ["stun:global.stun.twilio.com:3478?transport=udp"]),
-                              RTCIceServer(urlStrings: ["turn:global.turn.twilio.com:3478?transport=udp"], username: "ed34d142be056d219d860c1bc2a906a9b7b78ff2aa166009baef29c7506283bc", credential: "aCP9t4jjR7gBcU3txa8HvUq270OsNLuMpNiRo23Hvh0"),
-                              RTCIceServer(urlStrings: ["turn:global.turn.twilio.com:443?transport=tcp"], username: "ed34d142be056d219d860c1bc2a906a9b7b78ff2aa166009baef29c7506283bc", credential: "aCP9t4jjR7gBcU3txa8HvUq270OsNLuMpNiRo23Hvh0=")]
+        rtcConf.iceServers = self.iceServers
+//        [RTCIceServer(urlStrings: ["stun:global.stun.twilio.com:3478?transport=udp"]),
+//                              RTCIceServer(urlStrings: ["turn:global.turn.twilio.com:3478?transport=udp"], username: "ed34d142be056d219d860c1bc2a906a9b7b78ff2aa166009baef29c7506283bc", credential: "aCP9t4jjR7gBcU3txa8HvUq270OsNLuMpNiRo23Hvh0"),
+//                              RTCIceServer(urlStrings: ["turn:global.turn.twilio.com:443?transport=tcp"], username: "ed34d142be056d219d860c1bc2a906a9b7b78ff2aa166009baef29c7506283bc", credential: "aCP9t4jjR7gBcU3txa8HvUq270OsNLuMpNiRo23Hvh0=")]
 
 //        rtcConf.iceServers = iceServers
         
@@ -354,9 +356,9 @@ public class WebRTCClientVapor: NSObject, RTCPeerConnectionDelegate, RTCVideoVie
         let videoSource = self.peerConnectionFactory.videoSource()
         
         if self.customFrameCapturer {
-            self.videoCapturer = RTCCustomFrameCapturer(delegate: videoSource)
+            self.videoCapturer = RTCCustomFrameCapturerVapor(delegate: videoSource)
         } else {
-            self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
+            self.videoCapturer = RTCCustomFrameCapturerVapor(delegate: videoSource)
         }
         let videoTrack = self.peerConnectionFactory.videoTrack(with: videoSource, trackId: "video0")
         
